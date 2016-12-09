@@ -53,6 +53,7 @@ export default class Sticky extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.subscribed = false;
   }
 
   componentWillMount() {
@@ -62,7 +63,6 @@ export default class Sticky extends React.Component {
 
   componentDidMount() {
     this.on(window, windowEvents, this.recomputeState);
-    this.on(this.containerNode, containerEvents, this.recomputeState);
     this.recomputeState();
   }
 
@@ -72,7 +72,9 @@ export default class Sticky extends React.Component {
 
   componentWillUnmount() {
     this.off(window, windowEvents, this.recomputeState);
-    this.off(this.containerNode, containerEvents, this.recomputeState);
+    if (this.containerNode) {
+      this.off(this.containerNode, containerEvents, this.recomputeState);
+    }
     this.channel.unsubscribe(this.updateContext);
   }
 
@@ -111,6 +113,10 @@ export default class Sticky extends React.Component {
 
   updateContext = ({ inherited, node }) => {
     this.containerNode = node;
+    if (this.containerNode && !this.subscribed) {
+      this.on(this.containerNode, containerEvents, this.recomputeState);
+      this.subscribed = true;
+    }
     this.setState({
       containerOffset: inherited,
       distanceFromBottom: this.getDistanceFromBottom()
