@@ -156,6 +156,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -215,11 +217,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        this.props,
-	        this.props.children
-	      );
+	      var _props = this.props,
+	          element = _props.element,
+	          children = _props.children,
+	          props = _objectWithoutProperties(_props, ['element', 'children']);
+
+	      return _react2.default.createElement(element, props, children);
 	    }
 	  }]);
 
@@ -231,6 +234,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	Container.childContextTypes = {
 	  'sticky-channel': _react2.default.PropTypes.any
+	};
+	Container.propTypes = {
+	  element: _react2.default.PropTypes.string
 	};
 	exports.default = Container;
 	module.exports = exports['default'];
