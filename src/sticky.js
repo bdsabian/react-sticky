@@ -1,6 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const windowEvents = [
+  'resize',
+  'scroll',
+  'touchstart',
+  'touchmove',
+  'touchend',
+  'pageshow',
+  'load',
+];
+
+const containerEvents = [
+  'resize',
+  'scroll',
+];
+
 export default class Sticky extends React.Component {
 
   static propTypes = {
@@ -46,7 +61,8 @@ export default class Sticky extends React.Component {
   }
 
   componentDidMount() {
-    this.on(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+    this.on(window, windowEvents, this.recomputeState);
+    this.on(this.containerNode, containerEvents, this.recomputeState);
     this.recomputeState();
   }
 
@@ -55,7 +71,8 @@ export default class Sticky extends React.Component {
   }
 
   componentWillUnmount() {
-    this.off(['resize', 'scroll', 'touchstart', 'touchmove', 'touchend', 'pageshow', 'load'], this.recomputeState);
+    this.off(window, windowEvents, this.recomputeState);
+    this.off(this.containerNode, containerEvents, this.recomputeState);
     this.channel.unsubscribe(this.updateContext);
   }
 
@@ -121,16 +138,12 @@ export default class Sticky extends React.Component {
     }
   }
 
-  on(events, callback) {
-    events.forEach((evt) => {
-      window.addEventListener(evt, callback);
-    });
+  on(target, events, callback) {
+    events.forEach((evt) => target.addEventListener(evt, callback));
   }
 
-  off(events, callback) {
-    events.forEach((evt) => {
-      window.removeEventListener(evt, callback);
-    });
+  off(target, events, callback) {
+    events.forEach((evt) => target.removeEventListener(evt, callback));
   }
 
   shouldComponentUpdate(newProps, newState) {
