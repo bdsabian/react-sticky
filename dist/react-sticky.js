@@ -290,6 +290,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          node = _ref.node;
 
 	      _this.containerNode = node;
+	      if (_this.containerNode && !_this.subscribed) {
+	        _this.on(_this.containerNode, containerEvents, _this.recomputeState);
+	        _this.subscribed = true;
+	      }
 	      _this.setState({
 	        containerOffset: inherited,
 	        distanceFromBottom: _this.getDistanceFromBottom()
@@ -318,6 +322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    _this.state = {};
+	    _this.subscribed = false;
 	    return _this;
 	  }
 
@@ -331,7 +336,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      this.on(window, windowEvents, this.recomputeState);
-	      this.on(this.containerNode, containerEvents, this.recomputeState);
 	      this.recomputeState();
 	    }
 	  }, {
@@ -343,7 +347,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      this.off(window, windowEvents, this.recomputeState);
-	      this.off(this.containerNode, containerEvents, this.recomputeState);
+	      if (this.containerNode) {
+	        this.off(this.containerNode, containerEvents, this.recomputeState);
+	      }
 	      this.channel.unsubscribe(this.updateContext);
 	    }
 	  }, {
